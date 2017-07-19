@@ -4,7 +4,19 @@ const program = require('commander')
 const package = require('../package')
 
 program
-  .usage('<template> [project-name]')
-  .option('-c, --clone', 'use git clone')
-  .option('--offline', 'use cached templete')
+  .usage('snail init <template> [<project-name>]')
+  .option('-c, --clone', 'Use git clone instead of an http download.')
+  .option('--offline', 'Use local cache creation.')
 
+program.on('--help', () => {
+  console.log()
+  console.log('  Examples:')
+  console.log()
+  console.log('    snail init begin-vue my-project   : Create a project based on the template.')
+  console.log()
+})
+
+program.parse(process.argv)
+if (program.args.length < 1) return program.help()
+
+const templte = program.args[0]

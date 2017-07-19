@@ -6,5 +6,5 @@ const package = require('../package')
 program
   .version(package.version)
   .usage('<command> <option>')
-  .command('init', 'generate a new project from a template')
+  .command('init', 'Generate a new project from a template')
   .parse(process.argv)
