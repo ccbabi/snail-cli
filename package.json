@@ -1,5 +1,5 @@
 {
-  "name": "snail-cli",
+  "name": "snail-cline",
   "version": "0.0.1",
   "description": "A simple CLI tool",
   "main": "index.js",
