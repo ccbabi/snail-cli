@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 
+const fs = require('fs')
+const path = require('path')
 const program = require('commander')
+const inquirer = require('inquirer')
+const ora = require('ora')
+const download = require('download-git-repo')
 const package = require('../package')
 
 program
   .usage('snail init <template> [<project-name>]')
   .option('-c, --clone', 'Use git clone instead of an http download.')
-  .option('--offline', 'Use local cache creation.')
 
 program.on('--help', () => {
   console.log()
@@ -20,3 +24,50 @@ program.parse(process.argv)
 if (program.args.length < 1) return program.help()
 
 const templte = program.args[0]
+const hasSlash = templte.indexOf('/') > -1
+const rawName = program.args[1] || '.'
+const inPlace = rawName === '.'
+const destination = path.resolve(rawName)
+const clone = program.clone || false
+const repoMap = {
+  'begin-vue': 'ccbabi/begin-vue'
+}
+
+let repository
+if (!hasSlash) {
+  repository = repoMap[templte]
+  if (!repository) {
+    console.log('Templates don\'t exist')
+    return
+  }
+} else {
+  repository = templte
+}
+
+if (fs.existsSync(destination)) {
+  const message = inPlace
+    ? 'Do you want to generate a template for the current project?'
+    : 'The directory already exists, will it continue?'
+
+  inquirer.prompt([{
+    type: 'confirm',
+    name: 'answers',
+    message
+  }]).then(({ answers }) => {
+    if(answers) down()
+  }).catch(console.log)
+} else {
+  down()
+}
+
+function down() {
+  const spinner = ora({
+    text: 'Wait a minute, it\'s initializing..'
+  })
+  spinner.start()
+  download(repository, rawName, { clone }, function(err) {
+    spinner.stop()
+    if (err) return console.log(err)
+    console.log('Congratulations, initialization is complete!')
+  })
+}
