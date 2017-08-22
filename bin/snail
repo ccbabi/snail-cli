@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
 const program = require('commander')
-const package = require('../package')
+const pkg = require('../package')
 
 program
-  .version(package.version)
+  .version(pkg.version)
   .usage('<command> <option>')
-  .command('init', 'Generate a new project from a template')
+  .command('init', '初始化一个项目')
+  .command('mock', 'Mock服务器')
   .parse(process.argv)

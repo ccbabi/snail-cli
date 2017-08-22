@@ -6,23 +6,26 @@ const program = require('commander')
 const inquirer = require('inquirer')
 const ora = require('ora')
 const download = require('download-git-repo')
-const package = require('../package')
 
 program
-  .usage('snail init <template> [<project-name>]')
-  .option('-c, --clone', 'Use git clone instead of an http download.')
+  .usage('init <template> [<project-name>]')
+  .option('-c, --clone', '使用 git clone')
 
 program.on('--help', () => {
   console.log()
-  console.log('  Examples:')
+  console.log('  内置的模板有:')
   console.log()
-  console.log('    snail init begin-vue my-project   : Create a project based on the template.')
+  console.log('    begin-vue')
   console.log()
 })
 
 program.parse(process.argv)
-if (program.args.length < 1) return program.help()
+if (program.args.length < 1) {
+  program.help()
+  process.exit()
+}
 
+let repository
 const templte = program.args[0]
 const hasSlash = templte.indexOf('/') > -1
 const rawName = program.args[1] || '.'
@@ -33,41 +36,40 @@ const repoMap = {
   'begin-vue': 'ccbabi/begin-vue'
 }
 
-let repository
 if (!hasSlash) {
   repository = repoMap[templte]
   if (!repository) {
-    console.log('Templates don\'t exist')
-    return
+    console.err('模板文件不存在！')
+    process.exit()
   }
 } else {
   repository = templte
 }
 
 if (fs.existsSync(destination)) {
-  const message = inPlace
-    ? 'Do you want to generate a template for the current project?'
-    : 'The directory already exists, will it continue?'
+  const message = inPlace ? '当前目录生成一个项目？' : `${rawName}目录已存在，是否继续？`
 
   inquirer.prompt([{
     type: 'confirm',
     name: 'answers',
     message
   }]).then(({ answers }) => {
-    if(answers) down()
-  }).catch(console.log)
+    if (answers) down()
+  }).catch(err => {
+    throw err
+  })
 } else {
   down()
 }
 
-function down() {
+function down () {
   const spinner = ora({
-    text: 'Wait a minute, it\'s initializing..'
+    text: '请稍候片刻..'
   })
   spinner.start()
-  download(repository, rawName, { clone }, function(err) {
+  download(repository, rawName, { clone }, err => {
     spinner.stop()
-    if (err) return console.log(err)
-    console.log('Congratulations, initialization is complete!')
+    if (err) throw err
+    console.log('初始化完成！')
   })
 }

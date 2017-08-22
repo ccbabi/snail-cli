@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+
+const path = require('path')
+const program = require('commander')
+const express = require('express')
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const portfinder = require('portfinder')
+const connectMockMiddleware = require('connect-mock-middleware')
+const host = require('../lib/host')
+
+const app = express()
+const collect = function () {
+  const prefix = []
+  return (value) => {
+    prefix.push(value)
+    return prefix
+  }
+}
+
+program
+  .usage('mock [option]')
+  .option('-d, --dir <s>', 'Mock文件在的目录，默认为mock', 'mock')
+  .option('-P, --prefix <s>', '拦截的URL前缀，默认为api', collect(), '/api')
+  .option('-p, --port <n>', 'Mock服务的端口，默认为3824', Number, 3721)
+
+program.parse(process.argv)
+
+app.use(cors())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(connectMockMiddleware(path.resolve(program.dir), program.prefix))
+
+portfinder.basePort = program.port
+portfinder.getPort((err, port) => {
+  if (err) throw err
+  app.listen(port, host, () => {
+    console.log('Mock服务启动在：%s', `http://${host}:${port}`)
+  })
+})
