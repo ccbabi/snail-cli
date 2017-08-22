@@ -1,11 +1,16 @@
 {
   "name": "snail-cline",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A simple CLI tool",
   "main": "index.js",
   "repository": "git@github.com:ccbabi/snail-cli.git",
   "author": "kxxw28 <kxxw28@gmail.com>",
   "license": "MIT",
+  "bin": {
+    "snail": "bin/snail",
+    "snail-init": "bin/snail-init",
+    "snail-mock": "bin/snail-mock"
+  },
   "dependencies": {
     "body-parser": "^1.17.2",
     "commander": "^2.11.0",
