@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 
 const program = require('commander')
+const checkVersion = require('../lib/checkVersion')
 const pkg = require('../package')
 
-program
-  .version(pkg.version)
-  .usage('<command> <option>')
-  .command('init', '初始化一个项目')
-  .command('mock', 'Mock服务器')
-  .parse(process.argv)
+checkVersion(() => {
+  program
+    .version(pkg.version)
+    .usage('<command> <option>')
+    .command('init', '初始化一个项目')
+    .command('mock', 'Mock服务器')
+    .parse(process.argv)
+})
