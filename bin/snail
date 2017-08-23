@@ -1,14 +1,26 @@
 #!/usr/bin/env node
 
 const program = require('commander')
+const ora = require('ora')
+const isTodayFirst = require('../lib/isTodayFirst')
 const checkVersion = require('../lib/checkVersion')
 const pkg = require('../package')
 
-checkVersion(() => {
+function start () {
   program
     .version(pkg.version)
     .usage('<command> <option>')
     .command('init', '初始化一个项目')
-    .command('mock', 'Mock服务器')
+    .command('mock', '启动一个Mock服务器')
     .parse(process.argv)
-})
+}
+
+if (isTodayFirst) {
+  const spinner = ora('检查新版本..').start()
+  checkVersion(() => {
+    spinner.stop()
+    start()
+  })
+} else {
+  start()
+}

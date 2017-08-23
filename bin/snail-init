@@ -39,7 +39,7 @@ const repoMap = {
 if (!hasSlash) {
   repository = repoMap[templte]
   if (!repository) {
-    console.err('模板文件不存在！')
+    console.error('模板文件不存在！')
     process.exit()
   }
 } else {
@@ -63,10 +63,7 @@ if (fs.existsSync(destination)) {
 }
 
 function down () {
-  const spinner = ora({
-    text: '请稍候片刻..'
-  })
-  spinner.start()
+  const spinner = ora('请稍候片刻..').start()
   download(repository, rawName, { clone }, err => {
     spinner.stop()
     if (err) throw err
