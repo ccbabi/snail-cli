@@ -13,6 +13,14 @@ const app = express()
 const collect = function () {
   const prefix = []
   return (value) => {
+    const lastSlashIndex = value.lastIndexOf('/')
+
+    if (lastSlashIndex > -1) {
+      value = value.slice(lastSlashIndex)
+    } else {
+      value = `/${value}`
+    }
+
     prefix.push(value)
     return prefix
   }
