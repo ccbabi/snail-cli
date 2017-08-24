@@ -10,11 +10,11 @@ const chalk = require('chalk')
 
 program
   .usage('init <template> [<project-name>]')
-  .option('-c, --clone', '使用 git clone')
+  .option('-c, --clone', 'Use git clone')
 
 program.on('--help', () => {
   console.log()
-  console.log('  内置的模板有:')
+  console.log('  Built-in template:')
   console.log()
   console.log('    begin-vue')
   console.log()
@@ -40,7 +40,7 @@ const repoMap = {
 if (!hasSlash) {
   repository = repoMap[templte]
   if (!repository) {
-    console.error(chalk.yellow('Templte no exists!'))
+    console.error(chalk.yellow('Templte no exists!\n'))
     process.exit()
   }
 } else {
@@ -48,7 +48,7 @@ if (!hasSlash) {
 }
 
 if (fs.existsSync(destination)) {
-  const message = inPlace ? '当前目录生成一个项目？' : `${rawName}目录已存在，是否继续？`
+  const message = inPlace ? 'Current directory generation?' : `Directory [${rawName}] already exists, continue?？`
 
   inquirer.prompt([{
     type: 'confirm',

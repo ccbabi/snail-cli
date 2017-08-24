@@ -1,6 +1,6 @@
 {
   "name": "snail-cline",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "A simple CLI tool",
   "main": "index.js",
   "repository": "git@github.com:ccbabi/snail-cli.git",
