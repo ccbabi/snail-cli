@@ -6,6 +6,7 @@ const program = require('commander')
 const inquirer = require('inquirer')
 const ora = require('ora')
 const download = require('download-git-repo')
+const colors = require('colors/safe')
 
 program
   .usage('init <template> [<project-name>]')
@@ -39,7 +40,7 @@ const repoMap = {
 if (!hasSlash) {
   repository = repoMap[templte]
   if (!repository) {
-    console.error('模板文件不存在！')
+    console.error(colors.yellow('Templte no exists!'))
     process.exit()
   }
 } else {
@@ -63,10 +64,11 @@ if (fs.existsSync(destination)) {
 }
 
 function down () {
-  const spinner = ora('请稍候片刻..').start()
+  console.log('')
+  const spinner = ora(colors.cyan('Wait a minute..')).start()
   download(repository, rawName, { clone }, err => {
     spinner.stop()
     if (err) throw err
-    console.log('初始化完成！')
+    console.log(colors.green('Complete initialization!\n'))
   })
 }

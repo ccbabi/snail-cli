@@ -2,6 +2,7 @@
 
 const program = require('commander')
 const ora = require('ora')
+const colors = require('colors/safe')
 const isTodayFirst = require('../lib/isTodayFirst')
 const checkVersion = require('../lib/checkVersion')
 const pkg = require('../package')
@@ -10,13 +11,14 @@ function start () {
   program
     .version(pkg.version)
     .usage('<command> <option>')
-    .command('init', '初始化一个项目')
-    .command('mock', '启动一个Mock服务器')
+    .command('init', 'Init wepback project')
+    .command('mock', 'Start mock server')
     .parse(process.argv)
 }
 
 if (isTodayFirst) {
-  const spinner = ora('检查新版本..').start()
+  console.log('')
+  const spinner = ora(colors.gray('Check version..')).start()
   checkVersion(() => {
     spinner.stop()
     start()
