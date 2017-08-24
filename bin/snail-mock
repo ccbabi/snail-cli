@@ -6,7 +6,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const portfinder = require('portfinder')
-const colors = require('colors/safe')
+const chalk = require('chalk')
 const connectMockMiddleware = require('connect-mock-middleware')
 const host = require('../lib/host')
 
@@ -50,6 +50,6 @@ portfinder.basePort = program.port
 portfinder.getPort((err, port) => {
   if (err) throw err
   app.listen(port, host, () => {
-    console.log(colors.gray('Mock server start on：'), colors.green.underline(`http://${host}:${port}\n`))
+    console.log(chalk.gray('Mock server start on：'), chalk.underline.green(`http://${host}:${port}\n`))
   })
 })

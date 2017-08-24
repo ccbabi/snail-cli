@@ -6,7 +6,7 @@ const program = require('commander')
 const inquirer = require('inquirer')
 const ora = require('ora')
 const download = require('download-git-repo')
-const colors = require('colors/safe')
+const chalk = require('chalk')
 
 program
   .usage('init <template> [<project-name>]')
@@ -40,7 +40,7 @@ const repoMap = {
 if (!hasSlash) {
   repository = repoMap[templte]
   if (!repository) {
-    console.error(colors.yellow('Templte no exists!'))
+    console.error(chalk.yellow('Templte no exists!'))
     process.exit()
   }
 } else {
@@ -65,10 +65,10 @@ if (fs.existsSync(destination)) {
 
 function down () {
   console.log('')
-  const spinner = ora(colors.cyan('Wait a minute..')).start()
+  const spinner = ora(chalk.cyan('Wait a minute..')).start()
   download(repository, rawName, { clone }, err => {
     spinner.stop()
     if (err) throw err
-    console.log(colors.green('Complete initialization!\n'))
+    console.log(chalk.green('Complete initialization!\n'))
   })
 }
