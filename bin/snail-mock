@@ -13,13 +13,21 @@ const host = require('../lib/host')
 const app = express()
 const collect = function () {
   const prefix = []
-  return (value) => {
-    const lastSlashIndex = value.lastIndexOf('/')
+  return value => {
+    const gitBashRe = /^\w:\/git(.+)/i
 
-    if (lastSlashIndex > -1) {
-      value = value.slice(lastSlashIndex)
-    } else {
-      value = `/${value}`
+    // git-bash: /api
+    if (gitBashRe.test(value)) {
+      value = RegExp.$1
+    }
+
+    // git-bash: /*
+    if (value === '/usr/bin') {
+      value = '/*'
+    }
+
+    if (!/^\//.test(value)) {
+      value = '/' + value
     }
 
     prefix.push(value)
