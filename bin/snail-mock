@@ -28,12 +28,15 @@ const collect = function () {
 }
 
 program
-  .usage('mock [option]')
+  .usage('mock [<option>]')
   .option('-d, --dir <s>', 'Mock directory pathname, default mock', 'mock')
   .option('-P, --prefix <s>', 'Intercept url, default "/*"', collect(), '/*')
   .option('-p, --port <n>', 'Mock server port, default 3721', Number, 3721)
+  .option('-c --callback <s>', 'Jsonp callback name, default callback', 'callback')
 
 program.parse(process.argv)
+
+app.set('jsonp callback name', program.callback)
 app.use(cors({
   origin: (origin, callback) => {
     callback(null, true)
@@ -43,7 +46,10 @@ app.use(cors({
 }))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use(connectMockMiddleware(path.resolve(program.dir), program.prefix))
+app.use(connectMockMiddleware(path.resolve(program.dir), {
+  prefix: program.prefix,
+  callback: program.callback
+}))
 
 portfinder.basePort = program.port
 portfinder.getPort((err, port) => {
