@@ -30,11 +30,10 @@ const collect = function () {
 program
   .usage('mock [option]')
   .option('-d, --dir <s>', 'Mock directory pathname, default mock', 'mock')
-  .option('-P, --prefix <s>', 'Intercept url, default /*', collect(), '/*')
-  .option('-p, --port <n>', 'Mock server port, default 3824', Number, 3721)
+  .option('-P, --prefix <s>', 'Intercept url, default "/*"', collect(), '/*')
+  .option('-p, --port <n>', 'Mock server port, default 3721', Number, 3721)
 
 program.parse(process.argv)
-
 app.use(cors({
   origin: (origin, callback) => {
     callback(null, true)
