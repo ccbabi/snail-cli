@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+
+const fs = require('fs')
+const path = require('path')
+const program = require('commander')
+const mkdirp = require('mkdirp')
+const chalk = require('chalk')
+
+program
+.usage('install <tk-component-name>')
+
+program.parse(process.argv)
+
+if (!program.args.length) {
+  program.help()
+  process.exit()
+}
+
+const log = console.log
+const components = [...new Set(program.args)]
+const tkComponent = path.resolve('src/tk-component')
+
+if (!fs.existsSync(tkComponent)) {
+  mkdirp.sync('src/tk-component')
+  log(chalk.yellow(`created: ${tkComponent}`))
+}
+
+
+function downComponent () {
+
+}

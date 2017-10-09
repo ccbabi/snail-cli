@@ -13,6 +13,7 @@ function start () {
     .usage('<command> <option>')
     .command('init', 'Init wepback project')
     .command('mock', 'Start mock server')
+    .command('install', 'Install tk component')
     .parse(process.argv)
 }
 
