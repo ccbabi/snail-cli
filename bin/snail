@@ -2,7 +2,6 @@
 
 const program = require('commander')
 const ora = require('ora')
-const chalk = require('chalk')
 const isTodayFirst = require('../lib/isTodayFirst')
 const checkVersion = require('../lib/checkVersion')
 const pkg = require('../package')
@@ -18,8 +17,7 @@ function start () {
 }
 
 if (isTodayFirst) {
-  console.log('')
-  const spinner = ora(chalk.gray('Check version..')).start()
+  const spinner = ora('Check version..').start()
   checkVersion(() => {
     spinner.stop()
     start()

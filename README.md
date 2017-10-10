@@ -19,3 +19,7 @@ snail mock [<option>]
 ```
 The use of reference [connect-mock-middleware](https://www.npmjs.com/package/connect-mock-middleware)
 
+### Install tk-component
+```sh
+snail install <component-name> [<component-name>...]
+```

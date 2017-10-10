@@ -6,18 +6,19 @@ const program = require('commander')
 const inquirer = require('inquirer')
 const ora = require('ora')
 const download = require('download-git-repo')
-const chalk = require('chalk')
+const logger = require('../lib/logger')
+const log = console.log
 
 program
   .usage('init <template> [<project-name>]')
   .option('-c, --clone', 'Use git clone')
 
 program.on('--help', () => {
-  console.log()
-  console.log('  Built-in template:')
-  console.log()
-  console.log('    begin-vue')
-  console.log()
+  log()
+  log('  Built-in template:')
+  log()
+  log('    begin-vue')
+  log()
 })
 
 program.parse(process.argv)
@@ -40,7 +41,7 @@ const repoMap = {
 if (!hasSlash) {
   repository = repoMap[templte]
   if (!repository) {
-    console.error(chalk.yellow('Templte no exists!\n'))
+    logger.warning('Templte no exists!')
     process.exit()
   }
 } else {
@@ -48,7 +49,9 @@ if (!hasSlash) {
 }
 
 if (fs.existsSync(destination)) {
-  const message = inPlace ? 'Current directory generation?' : `Directory [${rawName}] already exists, continue?？`
+  const message = inPlace
+    ? 'Current directory generation?'
+    : `Directory [${rawName}] already exists, continue?？`
 
   inquirer.prompt([{
     type: 'confirm',
@@ -64,11 +67,10 @@ if (fs.existsSync(destination)) {
 }
 
 function down () {
-  console.log('')
-  const spinner = ora(chalk.cyan('Wait a minute..')).start()
+  const spinner = ora('Wait a minute...').start()
   download(repository, rawName, { clone }, err => {
     spinner.stop()
     if (err) throw err
-    console.log(chalk.green('Complete initialization!\n'))
+    logger.success('Done.')
   })
 }
