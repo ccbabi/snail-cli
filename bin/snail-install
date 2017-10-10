@@ -1,13 +1,23 @@
 #!/usr/bin/env node
 
+const os = require('os')
 const fs = require('fs')
 const path = require('path')
 const program = require('commander')
 const mkdirp = require('mkdirp')
-const chalk = require('chalk')
+const wget = require('node-wget')
+const decompress = require('decompress')
+const decompressUnzip = require('decompress-unzip')
+const mv = require('mv')
+const rimraf = require('rimraf')
+const hasYarn = require('has-yarn')
+const execa = require('execa')
+const getStream = require('get-stream')
+const logger = require('../lib/logger')
 
 program
 .usage('install <tk-component-name>')
+.option('-f, --force', 'Mandatory update component')
 
 program.parse(process.argv)
 
@@ -16,16 +26,136 @@ if (!program.args.length) {
   process.exit()
 }
 
-const log = console.log
-const components = [...new Set(program.args)]
-const tkComponent = path.resolve('src/tk-component')
+class Async {
+  constructor () {
+    this.list = []
+  }
 
-if (!fs.existsSync(tkComponent)) {
-  mkdirp.sync('src/tk-component')
-  log(chalk.yellow(`created: ${tkComponent}`))
+  use (fn) {
+    this.list.push(fn)
+  }
+
+  start (...args) {
+    const fn = this.list.shift()
+    args = [...args, this.next.bind(this)]
+    if (fn) fn.apply(null, args)
+  }
+
+  next (...args) {
+    const err = args[0]
+    if (err instanceof Error) return logger.error(err.message || err)
+    this.start.apply(this, args.slice(1))
+  }
 }
 
+const accessToken = 'pSLsnx-sX2XHSi4HErLV'
+const home = os.homedir()
+const asn = new Async()
+const force = program.force || false
+const tkComponentPath = path.resolve('src/tk-component')
+let components = [...new Set(program.args)]
 
-function downComponent () {
+if (!fs.existsSync(tkComponentPath)) {
+  logger.info(`create ${tkComponentPath}.`)
+  if (!mkdirp.sync('src/tk-component')) {
+    logger.error(`create ${tkComponentPath} failure.`)
+    process.exit()
+  }
+  logger.success(`created ${tkComponentPath} success.`)
+}
 
+const existsComponents = fs.readdirSync(tkComponentPath)
+
+if (force) {
+  existsComponents.forEach(component => {
+    if (components.includes(component)) {
+      const f = path.join(tkComponentPath, component)
+      asn.use(callback => {
+        logger.info(`delete ${component}.`)
+        rimraf(f, err => {
+          if (err) return callback(err)
+          logger.success(`deleted ${component}.`)
+          callback()
+        })
+      })
+    }
+  })
+} else {
+  components = components.filter(component => !existsComponents.includes(component))
+}
+
+components.forEach(component => {
+  asn.use(downZip.bind(null, component))
+  asn.use(unzip.bind(null, component))
+  asn.use(rename.bind(null, component))
+  asn.use(install.bind(null, component))
+})
+
+asn.use(callback => {
+  logger.success('Done.')
+})
+asn.start()
+
+function genDownUrl (name, version) {
+  return `http://vcs.51talk.com/fe-component/${name}/repository/${version}/archive.zip?private_token=${accessToken}`
+}
+
+function downZip (component, callback) {
+  logger.info(`Downloading ${component}...`)
+
+  const componentInfo = component.split('@')
+  const name = componentInfo[0]
+  const version = componentInfo[1] || 'master'
+  const url = genDownUrl(name, version)
+  const dest = path.join(home, `${name}.zip`)
+
+  wget({ url, dest }, (err, data, body) => {
+    if (err) {
+      rimraf(dest, () => {})
+      return callback(err)
+    }
+    callback(null, dest)
+  })
+}
+
+function unzip (component, temp, callback) {
+  logger.info(`Decompress ${component}...`)
+  decompress(temp, tkComponentPath, {
+    plugins: [
+      decompressUnzip()
+    ]
+  })
+    .then(files => {
+      const dirName = path.join(tkComponentPath, files[0].path.slice(0, -1))
+      const componentName = path.basename(temp, '.zip')
+      const newDirName = path.join(tkComponentPath, componentName)
+      callback(null, dirName, newDirName, temp)
+    })
+    .catch(err => callback(err))
+}
+
+function rename (component, name, newName, zip, callback) {
+  mv(name, newName, err => {
+    rimraf(zip, () => {})
+    if (err) {
+      rimraf(name, () => {})
+      return callback(err)
+    }
+    logger.success(`Success download ${component}.`)
+    callback(null, newName)
+  })
+}
+
+function install (component, dir, callback) {
+  logger.info(`Install dependencies for ${component}...`)
+  let command = 'yarn'
+  if (!hasYarn()) {
+    command = 'npm'
+  }
+  const stream = execa(command, ['install', '--production', '--registry=https://registry.npm.taobao.org'], { cwd: dir }).stdout
+  stream.pipe(process.stdout)
+  getStream(stream).then(value => {
+    logger.success(`Success install ${component}.`)
+    callback()
+  })
 }
