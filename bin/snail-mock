@@ -62,7 +62,9 @@ app.use(connectMockMiddleware(path.resolve(program.dir), {
 portfinder.basePort = program.port
 portfinder.getPort((err, port) => {
   if (err) throw err
-  app.listen(port, host, () => {
-    logger.success(`Server start on：http://${host}:${port}`)
+
+  app.listen(port, '0.0.0.0', () => {
+    logger.info('Mock server start on: ')
+    host.forEach(h => logger.success(`http://${h}:${port}`))
   })
 })
