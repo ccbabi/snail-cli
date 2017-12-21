@@ -296,6 +296,13 @@ create-error-class@^3.0.0:
   dependencies:
     capture-stack-trace "^1.0.0"
 
+crlf@^1.1.1:
+  version "1.1.1"
+  resolved "http://registry.npm.taobao.org/crlf/download/crlf-1.1.1.tgz#24172841b4c83529a6aa4489df7eed958b2ed16f"
+  dependencies:
+    glub "^1.0.0"
+    transform-file "^1.0.1"
+
 cross-spawn@^5.0.1:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
@@ -630,6 +637,16 @@ git-clone@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/git-clone/-/git-clone-0.1.0.tgz#0d76163778093aef7f1c30238f2a9ef3f07a2eb9"
 
+glob@^5.0.5:
+  version "5.0.15"
+  resolved "http://registry.npm.taobao.org/glob/download/glob-5.0.15.tgz#1bc936b9e02f4a603fcc222ecf7633d30b8b93b1"
+  dependencies:
+    inflight "^1.0.4"
+    inherits "2"
+    minimatch "2 || 3"
+    once "^1.3.0"
+    path-is-absolute "^1.0.0"
+
 glob@^6.0.1:
   version "6.0.4"
   resolved "https://registry.yarnpkg.com/glob/-/glob-6.0.4.tgz#0f08860f6a155127b2fadd4f9ce24b1aab6e4d22"
@@ -650,6 +667,13 @@ glob@^7.0.5:
     minimatch "^3.0.4"
     once "^1.3.0"
     path-is-absolute "^1.0.0"
+
+glub@^1.0.0:
+  version "1.0.3"
+  resolved "http://registry.npm.taobao.org/glub/download/glub-1.0.3.tgz#56c1643298ae25065c6315003337bba69d2fb866"
+  dependencies:
+    glob "^5.0.5"
+    minimist "^1.1.1"
 
 got@^6.3.0:
   version "6.7.1"
@@ -972,6 +996,10 @@ minimist@0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d"
 
+minimist@^1.1.1:
+  version "1.2.0"
+  resolved "http://registry.npm.taobao.org/minimist/download/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
+
 mkdirp@0.5.x, mkdirp@^0.5.1, mkdirp@~0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
@@ -1070,7 +1098,7 @@ ora@^1.3.0:
     cli-spinners "^1.0.0"
     log-symbols "^1.0.2"
 
-os-tmpdir@~1.0.1:
+os-tmpdir@^1.0.0, os-tmpdir@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/os-tmpdir/-/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
 
@@ -1454,6 +1482,12 @@ tough-cookie@~2.3.0:
   resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-2.3.2.tgz#f081f76e4c85720e6c37a5faced737150d84072a"
   dependencies:
     punycode "^1.4.1"
+
+transform-file@^1.0.1:
+  version "1.0.1"
+  resolved "http://registry.npm.taobao.org/transform-file/download/transform-file-1.0.1.tgz#7f95984acd23d4ebf8abb47ee9d83be166d12687"
+  dependencies:
+    os-tmpdir "^1.0.0"
 
 trim-repeated@^1.0.0:
   version "1.0.0"
